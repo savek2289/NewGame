@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Math Quest: Dragon Battle ✨</title>
     <style>
         * {
@@ -10,6 +10,7 @@
             padding: 0;
             box-sizing: border-box;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -19,12 +20,12 @@
             justify-content: center;
             align-items: center;
             font-family: 'Poppins', 'Segoe UI', 'Comic Neue', 'Chalkboard SE', cursive;
-            padding: 20px;
+            padding: 16px;
             position: relative;
             overflow-x: hidden;
         }
 
-        /* Анимированные частицы на фоне */
+        /* Анимированные частицы на фоне (упрощены для мобильных) */
         body::before {
             content: "";
             position: absolute;
@@ -34,99 +35,93 @@
                               radial-gradient(1px 1px at 80px 150px, #ffb347, rgba(0,0,0,0));
             background-size: 50px 50px, 100px 100px;
             background-repeat: repeat;
-            opacity: 0.3;
+            opacity: 0.2;
             pointer-events: none;
         }
 
         .game-container {
-            background: rgba(15, 20, 35, 0.75);
-            backdrop-filter: blur(10px);
-            border-radius: 70px;
-            padding: 30px 25px;
-            max-width: 800px;
+            background: rgba(15, 20, 35, 0.8);
+            backdrop-filter: blur(8px);
+            border-radius: 48px;
+            padding: 20px 18px;
+            max-width: 700px;
             width: 100%;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.5), 0 0 0 2px rgba(255,200,100,0.2) inset, 0 0 15px rgba(255,200,100,0.3);
-            border: 1px solid rgba(255,180,80,0.5);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,200,100,0.3) inset;
+            border: 1px solid rgba(255,180,80,0.4);
             transition: all 0.3s;
         }
 
         h1 {
             text-align: center;
-            font-size: 2rem;
+            font-size: 1.8rem;
             background: linear-gradient(135deg, #FFD966, #FFA559, #FF6E46);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            margin-bottom: 5px;
-            letter-spacing: 2px;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
         }
 
         .sub {
             text-align: center;
             color: #FFE5B4;
             font-weight: 500;
-            text-shadow: 0 1px 2px black;
-            margin-bottom: 25px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
         }
 
-        /* Полоски здоровья — улучшенные */
+        /* Полоски здоровья — адаптивные */
         .health-bars {
             display: flex;
             justify-content: space-between;
-            gap: 20px;
-            margin-bottom: 25px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .health-card {
             flex: 1;
-            background: rgba(0,0,0,0.5);
-            border-radius: 50px;
-            padding: 12px 15px;
-            color: white;
-            font-weight: bold;
+            background: rgba(0,0,0,0.55);
+            border-radius: 32px;
+            padding: 8px 10px;
             text-align: center;
             backdrop-filter: blur(4px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-            border-bottom: 3px solid gold;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            border-bottom: 2px solid gold;
         }
 
         .health-card .label {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
+            color: #fff0c0;
         }
 
         .health-bar-bg {
             background: #3a1f1f;
             border-radius: 30px;
-            height: 24px;
-            margin-top: 10px;
+            height: 18px;
+            margin-top: 8px;
             overflow: hidden;
-            box-shadow: inset 0 1px 4px black;
         }
 
         .health-bar-fill {
             width: 100%;
             height: 100%;
-            transition: width 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: width 0.25s ease;
             border-radius: 30px;
         }
 
         .player .health-bar-fill {
             background: linear-gradient(90deg, #4cd964, #2ecc71);
-            box-shadow: 0 0 6px #2ecc71;
         }
         .dragon .health-bar-fill {
             background: linear-gradient(90deg, #e67e22, #e74c3c);
-            box-shadow: 0 0 6px #e74c3c;
         }
 
         .hp-text {
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             margin-top: 5px;
             color: #ffd966;
         }
@@ -134,176 +129,254 @@
         /* Арена сражения */
         .arena {
             background: rgba(0, 0, 0, 0.4);
-            border-radius: 65px;
-            padding: 25px 20px;
+            border-radius: 48px;
+            padding: 18px 15px;
             margin: 15px 0;
             text-align: center;
             backdrop-filter: blur(5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
         .question-card {
             background: linear-gradient(145deg, #FFF2DF, #FFE4B5);
-            font-size: 2.8rem;
+            font-size: 2.2rem;
             font-weight: bold;
-            padding: 35px 20px;
-            border-radius: 70px;
+            padding: 25px 12px;
+            border-radius: 60px;
             font-family: 'Courier New', 'Fira Code', monospace;
             color: #3b2a1f;
-            margin-bottom: 25px;
-            box-shadow: 0 12px 0 #b97f40, 0 0 15px rgba(255,215,0,0.5);
-            transition: transform 0.1s ease;
-            letter-spacing: 4px;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            box-shadow: 0 8px 0 #b97f40, 0 0 10px rgba(255,215,0,0.4);
+            word-break: break-word;
+            letter-spacing: 2px;
         }
 
         .answer-area {
             display: flex;
-            gap: 20px;
+            gap: 12px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         #answerInput {
-            font-size: 1.8rem;
-            width: 200px;
+            font-size: 1.5rem;
+            width: 160px;
             text-align: center;
             padding: 12px;
-            border-radius: 70px;
+            border-radius: 60px;
             border: none;
             background: #FFF8E7;
             font-weight: bold;
             font-family: monospace;
             outline: none;
-            box-shadow: 0 5px 0 #ca9622, inset 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 0 #ca9622;
             transition: 0.05s linear;
-        }
-        #answerInput:focus {
-            transform: scale(1.02);
-            background: #FFFFF0;
         }
 
         button {
             background: linear-gradient(135deg, #FFB347, #FF8C00);
             border: none;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            padding: 10px 35px;
+            padding: 10px 24px;
             border-radius: 50px;
             color: #2c1a0c;
             cursor: pointer;
             transition: 0.07s linear;
-            box-shadow: 0 7px 0 #8B5A2B;
+            box-shadow: 0 5px 0 #8B5A2B;
             font-family: inherit;
-            letter-spacing: 1px;
+            -webkit-tap-highlight-color: transparent;
         }
         button:active {
-            transform: translateY(3px);
-            box-shadow: 0 3px 0 #8B5A2B;
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #8B5A2B;
         }
 
         .timer {
             background: #000000aa;
             display: inline-flex;
             align-items: center;
-            gap: 12px;
-            padding: 6px 20px;
-            border-radius: 60px;
+            gap: 8px;
+            padding: 6px 18px;
+            border-radius: 50px;
             color: #FFE484;
-            font-size: 1.6rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            margin: 10px auto;
+            margin: 8px auto;
             font-family: monospace;
             backdrop-filter: blur(8px);
-            border: 1px solid #ffb347;
         }
 
         .message {
             background: #1e1a2fcc;
-            border-radius: 50px;
-            padding: 12px 20px;
+            border-radius: 40px;
+            padding: 12px 16px;
             color: #FFE6B0;
             font-weight: bold;
             margin: 15px 0;
-            font-size: 1rem;
+            font-size: 0.85rem;
             backdrop-filter: blur(5px);
-            border-left: 6px solid #FFB347;
-            transition: 0.2s;
+            border-left: 4px solid #FFB347;
         }
 
         .difficulty {
             display: flex;
-            gap: 20px;
+            gap: 12px;
             justify-content: center;
-            margin: 25px 0 15px;
+            margin: 20px 0 12px;
         }
 
         .diff-btn {
-            font-size: 1rem;
+            font-size: 0.85rem;
             background: #251f1a;
             color: #FFD966;
-            box-shadow: 0 4px 0 #4a2e1a;
-            padding: 8px 25px;
-            border-radius: 60px;
+            box-shadow: 0 3px 0 #4a2e1a;
+            padding: 8px 16px;
+            border-radius: 40px;
         }
         .diff-btn.active {
             background: linear-gradient(135deg, #FFAA33, #FF7700);
             color: white;
-            box-shadow: 0 3px 0 #9b4a1a;
+            box-shadow: 0 2px 0 #9b4a1a;
             transform: translateY(1px);
         }
 
         .new-game {
             background: linear-gradient(135deg, #2ecc71, #27ae60);
             color: white;
-            width: 70%;
-            margin-top: 10px;
-            box-shadow: 0 7px 0 #1f6e43;
+            width: 80%;
+            margin: 8px auto 0;
+            display: block;
+            box-shadow: 0 5px 0 #1f6e43;
         }
 
         footer {
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #C9AE7A;
-            margin-top: 25px;
+            margin-top: 18px;
         }
 
         /* Анимации */
-        @keyframes floatGlow {
-            0% { text-shadow: 0 0 0px gold; }
-            100% { text-shadow: 0 0 12px rgb(255, 200, 0); }
-        }
-        .dragon-attack {
-            animation: shakeEffect 0.4s ease;
-        }
         @keyframes shakeEffect {
             0% { transform: translateX(0); }
-            25% { transform: translateX(-8px); background: #ff7b7b; }
-            75% { transform: translateX(8px); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
             100% { transform: translateX(0); }
         }
-        .player-attack {
-            animation: hitFlash 0.2s linear;
+        .dragon-attack {
+            animation: shakeEffect 0.3s ease;
         }
         @keyframes hitFlash {
             0% { background: #ffa500; }
             100% { background: #FFF2DF; }
         }
+        .player-attack {
+            animation: hitFlash 0.2s linear;
+        }
         .question-pop {
-            animation: pop 0.3s cubic-bezier(0.2, 1.2, 0.8, 1);
+            animation: pop 0.25s cubic-bezier(0.2, 1.2, 0.8, 1);
         }
         @keyframes pop {
-            0% { transform: scale(0.9); opacity: 0; }
-            80% { transform: scale(1.02); }
+            0% { transform: scale(0.95); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
 
+        /* Мобильная адаптация (экран до 550px) */
         @media (max-width: 550px) {
-            .question-card { font-size: 1.8rem; padding: 20px; }
-            .diff-btn { font-size: 0.8rem; padding: 5px 15px; }
-            button { font-size: 1.2rem; padding: 6px 20px; }
-            #answerInput { width: 140px; font-size: 1.4rem; }
+            body {
+                padding: 12px;
+            }
+            .game-container {
+                padding: 16px 12px;
+                border-radius: 36px;
+            }
+            h1 {
+                font-size: 1.4rem;
+            }
+            .sub {
+                font-size: 0.7rem;
+                margin-bottom: 12px;
+            }
+            .health-bars {
+                gap: 8px;
+            }
+            .health-card {
+                padding: 6px 6px;
+            }
+            .health-card .label {
+                font-size: 0.7rem;
+            }
+            .health-bar-bg {
+                height: 14px;
+            }
+            .hp-text {
+                font-size: 0.65rem;
+            }
+            .arena {
+                padding: 14px 10px;
+                margin: 10px 0;
+            }
+            .question-card {
+                font-size: 1.6rem;
+                padding: 18px 8px;
+                margin-bottom: 15px;
+            }
+            .answer-area {
+                gap: 8px;
+            }
+            #answerInput {
+                font-size: 1.2rem;
+                width: 130px;
+                padding: 10px;
+            }
+            button {
+                font-size: 1rem;
+                padding: 8px 18px;
+            }
+            .timer {
+                font-size: 1.1rem;
+                padding: 4px 12px;
+            }
+            .message {
+                font-size: 0.75rem;
+                padding: 10px 12px;
+            }
+            .difficulty {
+                gap: 8px;
+                margin: 15px 0 8px;
+            }
+            .diff-btn {
+                font-size: 0.7rem;
+                padding: 6px 12px;
+            }
+            .new-game {
+                width: 90%;
+                font-size: 1rem;
+                padding: 8px 16px;
+            }
+            footer {
+                font-size: 0.6rem;
+                margin-top: 12px;
+            }
+        }
+
+        /* Для очень маленьких экранов (320px) */
+        @media (max-width: 380px) {
+            .question-card {
+                font-size: 1.4rem;
+            }
+            .difficulty {
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+            }
+            .diff-btn {
+                width: 80%;
+            }
+            .new-game {
+                width: 95%;
+            }
         }
     </style>
 </head>
@@ -315,14 +388,14 @@
 
     <div class="health-bars">
         <div class="health-card player">
-            <div class="label">🛡️ ТЫ, ГЕРОЙ</div>
+            <div class="label">🛡️ ГЕРОЙ</div>
             <div class="health-bar-bg"><div class="health-bar-fill" id="playerHealthFill" style="width: 100%"></div></div>
-            <div class="hp-text"><span id="playerHpText">100</span> / 100 HP</div>
+            <div class="hp-text"><span id="playerHpText">100</span> / 100</div>
         </div>
         <div class="health-card dragon">
-            <div class="label">🐉 ДРАКОН ИГНИС</div>
+            <div class="label">🐉 ДРАКОН</div>
             <div class="health-bar-bg"><div class="health-bar-fill" id="dragonHealthFill" style="width: 100%"></div></div>
-            <div class="hp-text"><span id="dragonHpText">100</span> / 100 HP</div>
+            <div class="hp-text"><span id="dragonHpText">100</span> / 100</div>
         </div>
     </div>
 
@@ -330,24 +403,24 @@
         <div class="question-card" id="questionText">0 + 0</div>
         <div class="answer-area">
             <input type="number" id="answerInput" placeholder="?" autofocus>
-            <button id="submitBtn">✨ АТАКОВАТЬ ✨</button>
+            <button id="submitBtn">✨ АТАКА ✨</button>
         </div>
-        <div class="timer">⏳ ОСТАЛОСЬ: <span id="timerValue">0</span> сек</div>
+        <div class="timer">⏳ <span id="timerValue">0</span> сек</div>
     </div>
 
-    <div class="message" id="messageBox">✨ Введи ответ и нажми Enter, чтобы нанести удар! ✨</div>
+    <div class="message" id="messageBox">⚔️ Введи ответ и нажми Enter ⚔️</div>
 
     <div class="difficulty">
-        <button class="diff-btn active" data-diff="easy">🍎 ЛЕГЕНДАРНЫЙ (арифметика)</button>
-        <button class="diff-btn" data-diff="hard">🔥 ЭПИЧЕСКИЙ (степени/корни)</button>
+        <button class="diff-btn active" data-diff="easy">🍎 ЛЁГКИЙ</button>
+        <button class="diff-btn" data-diff="hard">🔥 СЛОЖНЫЙ</button>
     </div>
 
     <button class="new-game" id="newGameBtn">🔄 НОВАЯ БИТВА</button>
-    <footer>⚔️ Верный ответ — 10 урона дракону. Ошибка или промедление — дракон атакует! ⚔️</footer>
+    <footer>⚔️ Верный ответ — 10 урона. Ошибка/таймаут — контратака ⚔️</footer>
 </div>
 
 <script>
-    // ---------- ИГРОВАЯ ЛОГИКА (БЕЗ ТРИГОНОМЕТРИИ) ----------
+    // ---------- ИГРОВАЯ ЛОГИКА (без тригонометрии) ----------
     let playerHP = 100;
     let dragonHP = 100;
     let currentDifficulty = "easy";
@@ -383,7 +456,6 @@
         return currentDifficulty === "easy" ? 15 : 12;
     }
 
-    // лёгкая арифметика
     function generateEasyQuestion() {
         const ops = ['+', '-', '*', '/'];
         const op = ops[Math.floor(Math.random() * ops.length)];
@@ -412,7 +484,6 @@
         return { text, answer };
     }
 
-    // степени и корни
     function generateHardQuestion() {
         const types = ['square', 'cube', 'sqrt'];
         const type = types[Math.floor(Math.random() * types.length)];
@@ -469,7 +540,7 @@
         let damage = 10;
         playerHP = Math.max(0, playerHP - damage);
         updateHealthBars();
-        messageBox.innerHTML = `⏰ МЕДЛИШЬ! Дракон кусает и наносит ${damage} урона! ⏰`;
+        messageBox.innerHTML = `⏰ МЕДЛИШЬ! Дракон наносит ${damage} урона!`;
         messageBox.style.background = "#8b2c2ccc";
         document.querySelector(".player").classList.add("dragon-attack");
         setTimeout(() => document.querySelector(".player").classList.remove("dragon-attack"), 400);
@@ -481,7 +552,7 @@
         if (playerHP <= 0) {
             gameActive = false;
             stopTimer();
-            messageBox.innerHTML = "💀 ТЫ ПОВЕРЖЕН... Дракон смеётся над твоими расчётами. Новая игра? 💀";
+            messageBox.innerHTML = "💀 ТЫ ПОВЕРЖЕН... Дракон победил. Новая игра? 💀";
             messageBox.style.background = "#4a0000cc";
             answerInput.disabled = true;
             submitBtn.disabled = true;
@@ -489,7 +560,7 @@
         } else if (dragonHP <= 0) {
             gameActive = false;
             stopTimer();
-            messageBox.innerHTML = "🏆 ПОБЕДА! Дракон побеждён силой математики! Ты — легенда! 🏆";
+            messageBox.innerHTML = "🏆 ПОБЕДА! Ты одолел дракона! Великий математик! 🏆";
             messageBox.style.background = "#1f5a2ecc";
             answerInput.disabled = true;
             submitBtn.disabled = true;
@@ -508,16 +579,16 @@
         isWaitingForAnswer = true;
         startTimerForQuestion();
         messageBox.style.background = "#1e1a2fcc";
-        messageBox.innerHTML = "🐉 Следующее заклинание! Введи ответ скорее!";
+        messageBox.innerHTML = "🐉 Следующий пример! Введи ответ!";
         answerInput.focus();
     }
 
     function handleAnswer() {
         if (!gameActive || !isWaitingForAnswer) return;
         let raw = answerInput.value.trim();
-        if (raw === "") { messageBox.innerHTML = "📝 Введи число, воин!"; return; }
+        if (raw === "") { messageBox.innerHTML = "📝 Введи число!"; return; }
         let userNum = Number(raw);
-        if (isNaN(userNum)) { messageBox.innerHTML = "❌ Нужно число!"; return; }
+        if (isNaN(userNum)) { messageBox.innerHTML = "❌ Введи число!"; return; }
         isWaitingForAnswer = false;
         stopTimer();
 
@@ -525,7 +596,7 @@
             let damage = 10;
             dragonHP = Math.max(0, dragonHP - damage);
             updateHealthBars();
-            messageBox.innerHTML = `✨ ИДЕАЛЬНО! Твой ответ ${currentQuestion.answer}. Дракон теряет ${damage} HP! ✨`;
+            messageBox.innerHTML = `✨ ВЕРНО! Урон ${damage} по дракону! ✨`;
             messageBox.style.background = "#2a6b2fcc";
             document.querySelector(".dragon").classList.add("player-attack");
             setTimeout(() => document.querySelector(".dragon").classList.remove("player-attack"), 300);
@@ -536,7 +607,7 @@
             let damage = 10;
             playerHP = Math.max(0, playerHP - damage);
             updateHealthBars();
-            messageBox.innerHTML = `❌ ОШИБКА! Правильный ответ: ${currentQuestion.answer}. Дракон наносит ${damage} урона! ❌`;
+            messageBox.innerHTML = `❌ НЕВЕРНО! Ответ: ${currentQuestion.answer}. Дракон атакует!`;
             messageBox.style.background = "#8b2c2ccc";
             document.querySelector(".player").classList.add("dragon-attack");
             setTimeout(() => document.querySelector(".player").classList.remove("dragon-attack"), 400);
@@ -559,7 +630,7 @@
         answerInput.disabled = false;
         submitBtn.disabled = false;
         messageBox.style.background = "#1e1a2fcc";
-        messageBox.innerHTML = "⚔️ Новая битва! Дракон ждёт твоих ответов! ⚔️";
+        messageBox.innerHTML = "⚔️ Новая битва! Решай быстрее! ⚔️";
         startTimerForQuestion();
         answerInput.focus();
     }
